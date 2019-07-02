@@ -1,0 +1,151 @@
+//Problem Vuk - COCI 2009/2010, Contest #2
+#include <bits/stdc++.h>
+#define x first
+#define y second
+using namespace std;
+
+const int MAXN = 800;
+int N,M;
+char matriz[MAXN][MAXN];
+bool mark[MAXN][MAXN];
+int dist[MAXN][MAXN];
+bool matrizdfs[MAXN][MAXN];
+char letra;
+int ipartida, jpartida;
+int ichegada, jchegada;
+int ans;
+
+int tx[4] = {0,0,1,-1};
+int ty[4] = {1,-1,0,0};
+
+queue<pair<int,int> > fila;
+queue<pair<int,int> > tira[MAXN];
+
+void BFS(){
+
+    //Partindo de todas as árvores ao mesmo tempo (+)
+
+    while(!fila.empty()){
+
+        pair<int,int> atual = fila.front();
+        fila.pop();
+
+        for(int i=0; i<4; i++){
+
+            pair<int,int> par = make_pair(atual.x+tx[i], atual.y+ty[i]);
+
+            //Se ainda não foi atualizado, atualiza e coloca na fila
+            if(dist[par.x][par.y] < 0 && par.x > 0 && par.x <= N && par.y > 0 && par.y <=M){
+                dist[par.x][par.y] = dist[atual.x][atual.y] + 1;
+                fila.push(make_pair(par.x, par.y));
+                tira[dist[par.x][par.y]].push(make_pair(par.x, par.y));
+            }
+
+        }
+
+    }
+
+}
+
+bool DFS(int a, int b){
+
+    //cout << a << " " << b << endl;
+
+    bool ok = false;
+
+    if(a == ichegada && b == jchegada) return true;
+
+    matrizdfs[a][b] = true;
+
+    for(int i=0; i<4; i++){
+
+        if(a+tx[i] > 0 && a+tx[i] <= N && b+ty[i] > 0 && b+ty[i] <= M && !matrizdfs[a+tx[i]][b+ty[i]] && !mark[a+tx[i]][b+ty[i]])
+            ok = DFS(a+tx[i], b+ty[i]);
+
+        if(ok) return true;
+
+    }
+
+    return false;
+}
+
+void SOLVE(){
+
+    ans = 0; //Pior resposta
+    //Vamos percorrer a fila;
+
+    for(int i=0; i<MAXN; i++){
+        while(!tira[i].empty()){
+
+            pair<int,int> atual = tira[i].front();
+            tira[i].pop();
+
+            mark[atual.x][atual.y] = true;
+
+        }
+
+        if(dist[ipartida][jpartida] == i || dist[ichegada][jchegada] == i) break;
+
+        memset(matrizdfs, 0, sizeof(matrizdfs));
+        if(DFS(ipartida, jpartida)) ans = i+1;
+        else break;
+    }
+
+}
+
+
+int main(){
+
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> N >> M;
+
+    //memset(dist, -1, sizeof(dist));
+    for(int i=0; i<MAXN; i++){
+        for(int j=0; j<MAXN; j++){
+            dist[i][j] = -1;
+        }
+    }
+
+    for(int i=1; i<=N; i++){
+        for(int j=1; j<=M; j++){
+            cin >> matriz[i][j];
+            if(matriz[i][j] == 'V'){
+                ipartida = i;
+                jpartida = j;
+            }
+            if(matriz[i][j] == 'J'){
+                ichegada = i;
+                jchegada = j;
+            }
+            if(matriz[i][j] == '+'){
+                fila.push(make_pair(i,j));
+                dist[i][j] = 0;
+                tira[0].push(make_pair(i,j));
+            }
+        }
+    }
+
+    //A ideia é o seguinte
+    //1º: BFS simultânea de todas as árvores;
+    //2º: Tira tudo e chama a DFS para ver se ainda é conexo (no máximo serão 500 testes)
+
+    //BORA
+
+    BFS();
+
+    /*
+    for(int i=1; i<=N; i++){
+        for(int j=1; j<=M; j++){
+            cout << dist[i][j] << " ";
+        }
+        cout << "\n";
+    }
+    */
+
+    SOLVE();
+
+    cout << ans << "\n";
+
+    return 0;
+}
