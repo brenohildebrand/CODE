@@ -1,0 +1,144 @@
+//COCI 06 - REGIONAL - TETRIS
+/*
+
+  The idea is to divide in 7 different cases.
+  So in each case we calcule the possibilities in O(n) always doing some "for's" and comparing the difference between the heights.
+  If it's a valid possibilitie we increase the answer.
+  
+  See that there is a "for" for each position of the piece.
+  
+*/
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+
+const int MAXN = 110;
+int c,p, vetor[MAXN];
+ll ans;
+
+int main(){
+
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> c >> p;
+
+    memset(vetor, -1, sizeof(vetor));
+
+    for(int i=1; i<=c; i++) cin >> vetor[i];
+
+    if(p==1){
+
+        ans += c;
+
+        for(int i=1; i<=c-3; i++){
+
+            if(vetor[i] == vetor[i+1] && vetor[i] == vetor[i+2] && vetor[i] == vetor[i+3]) ans++;
+
+        }
+
+    }else if(p==2){
+
+        for(int i=1; i<=c-1; i++){
+            
+            if(vetor[i] == vetor[i+1]) ans++;
+            
+        }
+
+    }else if(p==3){
+
+        //First position
+        if(c>=3)
+        for(int i=1; i<=c-2; i++){
+
+            if(vetor[i] == vetor[i+1] && vetor[i+2]-vetor[i] == 1) ans++;
+
+        }
+
+        //Second position
+        if(c>=2)
+        for(int i=1; i<=c-1; i++){
+            if(vetor[i]-vetor[i+1] == 1) ans++;
+        }
+
+    }else if(p==4){
+
+        //First position
+        if(c>=3)
+        for(int i=c; i>=3; i--){
+
+            if(vetor[i] == vetor[i-1] && vetor[i-2]-vetor[i] == 1) ans++;
+
+        }
+
+        //Second position
+        if(c>=2)
+        for(int i=1; i<=c-1; i++){
+            if(vetor[i+1]-vetor[i] == 1) ans++;
+        }
+
+    }else if(p==5){
+
+        //First Position and Third Position
+        for(int i=1; i<=c-2; i++){
+            if(vetor[i] == vetor[i+1] && vetor[i] == vetor[i+2]) ans++;
+            if(vetor[i] == vetor[i+2] && vetor[i+1]+1 == vetor[i]) ans++;
+        }
+
+        //Second Position
+        for(int i=1; i<=c-1; i++){
+            if(vetor[i]-vetor[i+1] == 1) ans++;
+            if(vetor[i+1]-vetor[i] == 1) ans++;
+        }
+
+
+    }else if(p==6){
+
+        //First position
+        for(int i=1; i<=c-2; i++){
+            if(vetor[i] == vetor[i+1] && vetor[i] == vetor[i+2]) ans++;
+        }
+
+        //Second position
+        for(int i=1; i<=c-1; i++){
+            if(vetor[i] == vetor[i+1]) ans++;
+        }
+
+        //Third Position
+        for(int i=1; i<=c-2; i++){
+            if(vetor[i]+1 == vetor[i+1] && vetor[i]+1 == vetor[i+2]) ans++;
+        }
+
+        //Fourth Position
+        for(int i=1; i<=c-2; i++){
+            if(vetor[i]-2 == vetor[i+1]) ans++;
+        }
+
+    }else if(p==7){
+
+        //First position
+        for(int i=1; i<=c-2; i++){
+            if(vetor[i] == vetor[i+1] && vetor[i] == vetor[i+2]) ans++;
+        }
+
+        //Second position
+        for(int i=1; i<=c-1; i++){
+            if(vetor[i] == vetor[i+1]) ans++;
+        }
+
+        //Third Position
+        for(int i=1; i<=c-2; i++){
+            if(vetor[i+2]+1 == vetor[i+1] && vetor[i+2]+1 == vetor[i]) ans++;
+        }
+
+        //Fourth Position
+        for(int i=1; i<=c-2; i++){
+            if(vetor[i+1]-2 == vetor[i]) ans++;
+        }
+
+    }
+
+    cout << ans << "\n";
+
+    return 0;
+}
