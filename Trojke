@@ -1,0 +1,69 @@
+// COCI '06 Contest 3 #3 Trojke 
+/*
+  
+  The idea is to use a brute force algorithm that tests all the possibilities, taking three by three letters.
+  How to test?
+  Just using this comparison: Xx*Yy+Yx*Zy+Zx*Xy-Xx*Zy-Zx*Yy-Yx*Xy == 0. (Consider the points X, Y and Z)
+  
+  Why does it work?
+  Prove:
+  First consider that there are three points in the same straight line: A,B and C.
+  Then we can say that: vector(AB) = n * vector(AC), n is a real number.
+  So we can write that as: Bx - Ax = n * (Cx - Ax) (i)
+                           By - Ay = n * (Cy - Ay) (ii)
+                           
+  Dividing (i) by (ii) and using a crossing multiplication:
+  Bx*Cy-Ax*Cy-Bx*Ay+Ax*Ay = By*Cx-By*Ax-Ay*Cx+AyAx
+  
+  Isolating we have:
+  Ax*By+Bx*Cy+Cx*Ay-Ax*Cy-Cx*By-Bx*Ay = 0
+  
+*/
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 128;
+int n;
+int ans;
+vector<pair<int,int> > vetor;
+
+void calcula(int x, int y, int z){
+
+    int xx = vetor[x].first;
+    int xy = vetor[x].second;
+    int yx = vetor[y].first;
+    int yy = vetor[y].second;
+    int zx = vetor[z].first;
+    int zy = vetor[z].second;
+
+    if(xx*yy+yx*zy+zx*xy-xx*zy-zx*yy-yx*xy == 0) ans++;
+
+    return;
+}
+
+int main(){
+
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    for(int i=0; i<n; i++){
+        string s;
+        cin >> s;
+        for(int j=0; j<n; j++){
+            if(s[j] != '.') vetor.push_back({i,j});
+        }
+    }
+
+    for(int i=0; i<vetor.size(); i++){
+        for(int j = i+1; j<vetor.size(); j++){
+            for(int k = j+1; k<vetor.size(); k++){
+                calcula(i,j,k);
+            }
+        }
+    }
+
+    cout << ans << "\n";
+
+    return 0;
+}
