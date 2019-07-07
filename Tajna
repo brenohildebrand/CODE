@@ -1,0 +1,45 @@
+//COCI '07 Contest 3 #3 Tajna 
+/*
+  The idea is to find the biggest possible divisor (divisor) that can be used (R<=C). After this I just build the string, because
+  I know that in each moment the next word will be after 'divisor' spaces.
+*/
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 1000;
+string s;
+string ans;
+bool mark[MAXN];
+int divisor;
+
+int main(){
+
+    cin >> s;
+
+    for(int i=1; i<=s.size(); i++){
+
+        if(s.size()%i==0 && i<=s.size()/i) divisor = max(divisor, i);
+
+    }
+
+    //cout << "Size: " << s.size() << "\n";
+    //cout << "Div: " << divisor << "\n";
+
+    for(int i=0; i<s.size(); i++){
+
+        if(mark[i]) continue;
+
+        int ind = i;
+        while(ind < s.size()){
+
+            mark[ind] = true;
+            ans += s[ind];
+            ind+=divisor;
+
+        }
+
+    }
+
+    cout << ans << "\n";
+    return 0;
+}
