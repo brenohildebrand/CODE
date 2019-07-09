@@ -1,0 +1,103 @@
+//NOI 08 - IVM
+/*
+  
+  Just created functions that were described in the statement.
+  
+*/
+#include <bits/stdc++.h>
+using namespace std;
+#define x first
+#define y second
+
+const int MAXN = 1100;
+int n;
+int atual = 0;
+string s;
+int number;
+stack<int> pilha, aux;
+pair<string,int> sequence[MAXN];
+
+void push(int ind){
+    pilha.push(sequence[ind].y);
+}
+
+void store(){
+    if(pilha.size()){
+        atual = pilha.top();
+        pilha.pop();
+    }
+    else atual = 0;
+}
+
+void load(){
+    int now = atual;
+    pilha.push(now);
+}
+
+void plus_(){
+    if(pilha.size()>=2){
+        int first = pilha.top();
+        pilha.pop();
+        int second = pilha.top();
+        pilha.pop();
+        pilha.push(first+second);
+    }
+}
+
+void times_(){
+    if(pilha.size()>=2){
+        int first = pilha.top();
+        pilha.pop();
+        int second = pilha.top();
+        pilha.pop();
+        pilha.push(first*second);
+    }else if(pilha.size() == 1){
+        pilha.pop();
+        pilha.push(0);
+    }
+}
+
+int ifzero(int ind){
+    if(pilha.size()){
+        int first = pilha.top();
+        pilha.pop();
+        if(first == 0) return sequence[ind].y-1;
+        else return ind;
+    }
+    return ind;
+}
+
+int main(){
+
+    cin >> n;
+
+    for(int i=0; i<n; i++){
+
+        number = 0;
+        cin >> s;
+        if(s == "PUSH" || s == "IFZERO") cin >> number;
+
+        sequence[i] = make_pair(s, number);
+
+    }
+
+    //Process
+    for(int i=0; sequence[i].x != "DONE"; i++){
+
+        //cout << endl;
+        //cout << sequence[i].x << " " << sequence[i].y << endl;
+
+        if(sequence[i].x == "PUSH") push(i);
+        if(sequence[i].x == "STORE") store();
+        if(sequence[i].x == "LOAD") load();
+        if(sequence[i].x == "PLUS") plus_();
+        if(sequence[i].x == "TIMES") times_();
+        if(sequence[i].x == "IFZERO") i = ifzero(i);
+
+    }
+
+    if(pilha.size()) cout << pilha.top() << "\n";
+    else cout << 0 << "\n";
+
+    return 0;
+}
