@@ -1,0 +1,117 @@
+//NOI 10 - Card
+/*
+  
+  I created a struct to the cards that stores the ID of the next card (frente), and the ID of the previous one (tras).
+  So I can do the operations in O(1), just updating what is necessary.
+  See that I always store the first (um), the second (dois), the thrid (tres) and the last card of the stack.
+
+*/
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 1000100;
+int m, k;
+int um, dois, tres, last;
+char c;
+stack<int> pilha;
+
+struct baralho{
+    int tras;
+    int frente;
+};
+
+baralho card[MAXN];
+
+void A(){
+
+    int umfake = um, doisfake = dois, tresfake = tres, lastfake = last;
+
+    //Atualiza um
+    card[um].frente = last;
+    card[um].tras = -1;
+    um = doisfake;
+
+    //Atualiza dois
+    card[dois].frente = -1;
+    dois = tresfake;
+
+    //Atualiza tres
+    tres = card[tresfake].tras;
+
+    //Atualiza last
+    card[last].tras = umfake;
+    last = umfake;
+
+}
+
+void B(){
+
+    int umfake = um, doisfake = dois, tresfake = tres, lastfake = last;
+
+    //Atualiza um
+    card[um].tras = card[doisfake].tras;
+
+    //Atualiza dois
+    card[dois].frente = lastfake;
+    card[dois].tras = -1;
+    dois = tresfake;
+
+    //Atualiza tres
+    card[tres].frente = umfake;
+    tres = card[tresfake].tras;
+
+    //Atualiza last
+    card[last].tras = doisfake;
+    last = doisfake;
+
+}
+
+int main(){
+
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> m >> k;
+
+    //Inicialização
+    um = 0; dois = 1; tres = 2;
+    last = m-1;
+    card[0].frente = -1;
+    card[0].tras = m-2;
+    for(int i=1; i<m-1; i++){
+        card[i].frente = i-1;
+        card[i].tras = i+1;
+    }
+    card[m-1].frente = m-2;
+    card[m-1].tras = -1;
+
+    while(cin >> c && c!='.'){
+        //cout << c << endl;
+        if(c=='A') A();
+        if(c=='B') B();
+
+        /*
+        for(int i=um; i!=-1;){
+            cout << i << " ";
+
+            i = card[i].tras;
+        }
+
+        cout << endl;
+        */
+
+    }
+
+    int qtd = 0;
+    for(int i=um; i!=-1;){
+
+        if(qtd == k-1) cout << i;
+        if(qtd == k || qtd == k+1) cout << " " << i;
+
+        qtd++;
+
+        i = card[i].tras;
+
+    }
+
+    return 0;
+}
