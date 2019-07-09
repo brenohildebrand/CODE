@@ -1,0 +1,52 @@
+#include <bits/stdc++.h>
+using namespace std;
+//NOI 08 - Gecko
+/*
+  
+  The idea consists in always having a row filled. See:
+  We started having the first row already filled with the number given.
+  So we can pass through each cell of the second row and for each of them calculate the best option, i.e.,
+  the maximum between the three options: the number of the cell already given + the best option already calculated to the 
+  cell right above, the cell in the right diagonal or the cell in the left diagonal.
+  We repeat this process until fill the last row.
+  Then the answer is the maximum number calculated to a cell at the last row.
+  
+*/
+const int MAXN = 568;
+int r,c;
+int matriz[MAXN][MAXN];
+int best[MAXN][MAXN];
+int ans;
+int altx[3] = {-1,-1,-1};
+int alty[3] = {0, 1, -1};
+
+int main(){
+
+    cin >> r >> c;
+
+    for(int i=1; i<=r; i++){
+        for(int j=1; j<=c; j++){
+            cin >> matriz[i][j];
+        }
+    }
+
+    for(int i=1; i<=r; i++){
+
+        for(int j=1; j<=c; j++){
+
+            for(int k=0; k<3; k++){
+
+                best[i][j] = max(best[i][j], matriz[i][j]+best[i+altx[k]][j+alty[k]]);
+
+            }
+
+        }
+
+    }
+
+    for(int i=1; i<=c; i++) ans = max(ans, best[r][i]);
+
+    cout << ans << "\n";
+
+    return 0;
+}
