@@ -1,0 +1,58 @@
+//COCI '13 Contest 1 #2 Kusac
+/*
+  
+  The idea is to think in something like a greedy algorithm.
+  Always we have to find the n/m fraction... So split all the n sausages in m pieces. Now it's nedeed to select n units of these
+  small pieces trying to solve the problem for one of the tasters and if it's nedeed we do a real division and increase the answer.
+  After this we try to select n units of the rest to solve the problem for more one taster. We continue doing this.
+  The inicial splits are only to help us think in fractions.
+  
+*/
+#include <bits/stdc++.h>
+using namespace std;
+
+int n, total;
+int ans;
+int qtd = 1;
+int p;
+int barra;
+
+int main(){
+
+    cin >> n >> total;
+
+    barra = total;
+    p = n;
+
+    while(qtd <= n){
+
+        if(p > barra){
+            qtd += p/barra;
+            p = p%barra;
+            if(p==0){
+                p = n;
+                continue;
+            }
+        }
+
+        while(barra >= p){
+
+            if(barra == p){
+                barra = 0;
+                p = n;
+            }else{
+                barra -= p;
+                ans++;
+                p = n;
+            }
+
+        }
+
+        p = p - barra;
+        qtd++;
+        barra = total;
+    }
+
+    cout << ans << "\n";
+    return 0;
+}
