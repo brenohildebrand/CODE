@@ -1,0 +1,43 @@
+//NOI 16 - LunchBox
+/*
+  
+  It's a greedy algorithm.
+  Just sorted the k's and took the best option until passing of the value m.
+  
+*/
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 1100000;
+int n, m;
+int vetor[MAXN];
+int ans;
+
+int main(){
+
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> m >> n;
+
+    for(int i=1; i<=n; i++) cin >> vetor[i];
+
+    sort(vetor+1, vetor+1+n);
+
+    int soma = 0;
+    for(int i=1; i<=n; i++){
+
+        if(soma+vetor[i] <= m){
+
+            soma+=vetor[i];
+            ans++;
+
+        }else{
+            break;
+        }
+
+    }
+
+    cout << ans << endl;
+
+    return 0;
+}
