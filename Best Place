@@ -1,0 +1,21 @@
+//NOI 17 - Best Place
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 1000100;
+int n;
+int vetorx[MAXN];
+int vetory[MAXN];
+
+int main(){
+
+    cin >> n;
+    for(int i=0; i<n; i++) cin >> vetorx[i] >> vetory[i];
+
+    sort(vetorx, vetorx+n);
+    sort(vetory, vetory+n);
+
+    cout << vetorx[n/2] << " " << vetory[n/2] << "\n";
+
+    return 0;
+}
