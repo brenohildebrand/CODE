@@ -1,0 +1,28 @@
+//NOI 2009 - xmas
+/*
+  I just create a static vector and associated what was necessary.
+    cin >> x;
+    ans[x] = i;
+  The code was basically this.
+*/
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 30000;
+int n;
+int ans[MAXN];
+int x;
+
+int main(){
+
+    cin >> n;
+    for(int i=1; i<=n; i++){
+        cin >> x;
+        ans[x] = i;
+    }
+
+    for(int i=1; i<=n; i++) cout << ans[i] << "\n";
+
+
+    return 0;
+}
