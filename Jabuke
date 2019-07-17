@@ -1,0 +1,101 @@
+//COCI 07 - Jabuke
+/*
+  The idea is to find the equations of the lines that are associated to the sides of the triangle.
+  So we can find the signal of the points that are in the plane of the points belonging to the triangle.
+  We just test if the point given is at that side of the plane. We test this for each line.
+  
+  To find the equation of a line given two points:
+  Just develop the next equations:
+  m = (Y-Y0)/(X-X0).
+  Y-Y0 = m*(X-X0).
+  
+  You will discover that in a line a*x + b*y + c = 0 :
+  a = Y-Y0.
+  b = X0-X.
+  c = X*Y0 - Y*X0.
+  
+  To find the signal of the points that are in the plane of the points belonging to the triangle, we just replace the values of a,b and c
+  already discovered and replace (x,y) by (G.x, G.y) being G the barycenter (a point inside the triangle).
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+#define x first
+#define y second
+
+const int MAXN = 150;
+int n, ans;
+double area;
+pair<double,double> a,b,c, G;
+pair<double,double> vertice;
+
+struct reta{
+    int a;
+    int b;
+    int c;
+    bool sinal;
+};
+
+reta A,B,C;
+
+reta achareta(double X, double Y, double X0, double Y0){
+
+    reta res;
+
+    res.a = Y-Y0;
+    res.b = X0-X;
+    res.c = X*Y0-Y*X0;
+
+    //Descobrindo o sinal por substituição do baricentro
+    if(res.a*G.x + res.b*G.y + res.c > 0) res.sinal = 1;
+    else res.sinal = 0;
+
+    return res;
+}
+
+int main(){
+
+    cin >> a.x >> a.y >> b.x >> b.y >> c.x >> c.y;
+
+    area = abs(a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y))/2;
+
+    //Acha as equações das retas.
+
+    G.x = (a.x+b.x+c.x)/3;
+    G.y = (a.y+b.y+c.y)/3;
+
+    A = achareta(a.x, a.y, b.x, b.y);
+    B = achareta(a.x, a.y, c.x, c.y);
+    C = achareta(b.x, b.y, c.x, c.y);
+
+    /*
+    cout << "Reta A: " << A.a << "  " << A.b << "  " << A.c << "  " << A.sinal << "\n";
+    cout << "Reta B: " << B.a << "  " << B.b << "  " << B.c << "  " << B.sinal << "\n";
+    cout << "Reta C: " << C.a << "  " << C.b << "  " << C.c << "  " << C.sinal << "\n";
+    */
+
+    cin >> n;
+
+    for(int i=1; i<=n; i++){
+
+        cin >> vertice.x >> vertice.y;
+
+       //cout << "\n" << "Results: " << A.a*vertice.x + A.b*vertice.y + A.c << "   " << B.a*vertice.x + B.b*vertice.y + B.c << "   " << C.a*vertice.x + C.b*vertice.y + C.c << "\n\n";
+
+        bool ok1 = false, ok2 = false, ok3 = false;
+
+        //Testando os valores nas retas
+        if((A.a*vertice.x + A.b*vertice.y + A.c > 0 && A.sinal) || (A.a*vertice.x + A.b*vertice.y + A.c < 0 && !A.sinal) || (A.a*vertice.x + A.b*vertice.y + A.c == 0)) ok1 = true;
+        if((B.a*vertice.x + B.b*vertice.y + B.c > 0 && B.sinal) || (B.a*vertice.x + B.b*vertice.y + B.c < 0 && !B.sinal) || (B.a*vertice.x + B.b*vertice.y + B.c == 0)) ok2 = true;
+        if((C.a*vertice.x + C.b*vertice.y + C.c > 0 && C.sinal) || (C.a*vertice.x + C.b*vertice.y + C.c < 0 && !C.sinal) || (C.a*vertice.x + C.b*vertice.y + C.c == 0)) ok3 = true;
+
+        if(ok1 && ok2 && ok3) ans++;
+
+    }
+
+    cout.precision(1);
+    cout.setf(ios::fixed);
+    cout << area << "\n";
+    printf("%d", ans);
+    return 0;
+}
