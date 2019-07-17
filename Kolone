@@ -1,0 +1,86 @@
+//COCI '06 Contest 2 #3 Kolone
+/*
+  To solve this problem I simulated the swaps that the statement explained.
+  I used a static vector to be the spaces where the ants were, so I put the ants close to its middle.
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 500;
+int n,m, T;
+char vetor[MAXN];
+int direction[MAXN];
+bool ok[MAXN];
+
+int main(){
+
+    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+
+    cin >> n >> m;
+
+    for(int i=199; i>=199-n+1; i--){
+        cin >> vetor[i];
+        direction[i] = 2;
+    }
+
+    for(int i=200; i<=200+m-1; i++){
+        cin >> vetor[i];
+        direction[i] = 1;
+    }
+
+    cin >> T;
+
+    for(int i=1; i<=T; i++){
+
+        memset(ok, 0, sizeof(ok));
+        //for(int i=199-n+1; i<=200+m-1; i++) cout << vetor[i];
+        //cout << endl;
+
+        for(int i=199-n+2; i<=200+m-2; i++){
+
+            if(ok[i]) continue;
+            else ok[i] = true;
+
+            if(direction[i] == 1){
+
+                if(ok[i-1]) continue;
+
+                if(direction[i-1] == 2){
+                    char tmp;
+                    tmp = vetor[i];
+                    vetor[i] = vetor[i-1];
+                    vetor[i-1] = tmp;
+
+                    direction[i] = 2;
+                    direction[i-1] = 1;
+                    ok[i-1] = true;
+                }
+
+            }else if(direction[i] == 2){
+
+                if(ok[i+1]) continue;
+
+                if(direction[i+1] == 1){
+                    char tmp;
+                    tmp = vetor[i];
+                    vetor[i] = vetor[i+1];
+                    vetor[i+1] = tmp;
+
+                    direction[i] = 1;
+                    direction[i+1] = 2;
+                    ok[i+1] = true;
+                }
+
+            }
+
+        }
+
+    }
+
+    for(int i=199-n+1; i<=200+m-1; i++) cout << vetor[i];
+
+    cout << "\n";
+
+    return 0;
+}
