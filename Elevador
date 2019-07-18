@@ -1,0 +1,25 @@
+//OBI 2018 F1P2 - Elevador
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 10100;
+int n;
+int vetor[MAXN];
+bool ok = true;
+
+int main(){
+
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    cin >> n;
+
+    for(int i=1; i<=n; i++) cin >> vetor[i];
+
+    sort(vetor, vetor+1+n);
+
+    for(int i=1; i<=n; i++) if(vetor[i] - vetor[i-1] > 8) ok = false;
+
+    if(ok) cout << "S\n";
+    else cout << "N\n";
+
+    return 0;
+}
