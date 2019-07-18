@@ -1,0 +1,57 @@
+COCI 09 - Mali
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 101;
+int n, ans;
+int timea[MAXN];
+int timeb[MAXN];
+int oficiala[MAXN];
+int oficialb[MAXN];
+
+int main(){
+
+    cin >> n;
+
+    for(int i=1; i<=n; i++){
+
+        int a,b;
+        cin >> a >> b;
+
+        timea[a]++; timeb[b]++;
+
+        for(int k=1; k<=100; k++){
+            oficiala[k] = timea[k];
+            oficialb[k] = timeb[k];
+        }
+
+        int contadora = 100;
+        int contadorb = 1;
+        ans = 0;
+
+        while(contadora >= 1 && contadorb <= 100){
+
+            while(!oficiala[contadora] && contadora > 0) contadora--;
+            while(!oficialb[contadorb] && contadorb < 101) contadorb++;
+
+            //cout << contadora << " " << contadorb << endl;
+
+            if(contadora <= 0 || contadorb >= 101) break;
+
+            if(contadora+contadorb > ans) ans = contadora + contadorb;
+
+            if(oficiala[contadora] > oficialb[contadorb]){
+                oficiala[contadora] -= oficialb[contadorb];
+                oficialb[contadorb] = 0;
+            }else{
+                oficialb[contadorb] -= oficiala[contadora];
+                oficiala[contadora] = 0;
+            }
+
+        }
+
+        cout << ans << "\n";
+    }
+
+    return 0;
+}
