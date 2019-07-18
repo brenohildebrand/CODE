@@ -1,0 +1,127 @@
+//COCI 13 - sumo
+/*
+  
+  Comments during the code.
+  
+*/
+#include <iostream>
+#include <cstring>
+#include <queue>
+using namespace std;
+
+const int MAXN = 100100;
+const int MAXM = 500100;
+int n,m, ans;
+int a,b;
+int team[MAXN]; //Team
+pair<int,int> pares[MAXM];
+queue<int> fila[MAXN];
+
+//This function is only because I thought that could exist a possibility where the new teams discovered by function busca
+//could change the answer, changing something that the algorithm didn't consider when it read some previous pair.
+void solve(){
+
+    for(int i=1; i<=n; i++){
+
+        int c = pares[i].first, d = pares[i].second;
+
+        if(team[c] == team[d]){
+            ans = i;
+            break;
+        }
+
+    }
+
+    return;
+}
+ 
+//This function just update the players that *now* have a team
+bool busca(int x){
+
+    while(!fila[x].empty()){
+
+        int atual = fila[x].front();
+        fila[x].pop();
+
+        if(team[atual] == -1){
+            if(team[x]) team[atual] = 0;
+            else team[atual] = 1;
+            bool ok = busca(atual);
+            if(!ok) return false;
+        }else{
+            if(team[x] && team[atual]) return false;
+            if(!team[x] && !team[atual]) return false;
+        }
+    }
+
+    return true;
+}
+
+int main(){
+
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    memset(team, -1, sizeof(team));
+
+    cin >> n >> m;
+
+    //First time
+    ans = 1;
+    cin >> a >> b;
+    team[a] = 0;
+    team[b] = 1;
+    if(a==b){
+        cout << 1 << "\n";
+        return 0;
+    }
+    
+    //For each pair, I test all possibilities
+    for(int i=2; i<=m; i++){
+
+        cin >> a >> b;
+        pares[i].first = a;
+        pares[i].second = b;
+
+        if(team[a] == team[b] && team[a]!=-1){ //If they have the same team
+            ans = i;
+            break;
+        }else if(team[a] != team[b] && team[a]!=-1 && team[b]!=-1){ //If They have different teams
+
+            continue;
+
+        }else if(team[a]==-1 && team[b]!=-1){ //If "b" has a team, but "a" don't.
+
+            if(team[b]) team[a] = 0;
+            else team[a] = 1;
+
+            bool sla = busca(a);
+            if(!sla){
+                ans = i;
+                solve();
+                break;
+            }
+
+        }else if(team[a]!=-1 && team[b]==-1){ //If "a" has a team, but "b" don't.
+
+            if(team[a]) team[b] = 0;
+            else team[b] = 1;
+
+            bool sla = busca(b);
+            if(!sla){
+                ans = i;
+                solve();
+                break;
+            }
+
+        }else{ //If they don't have a team
+
+            fila[a].push(b);
+            fila[b].push(a);
+
+        }
+    }
+
+    cout << ans << "\n";
+
+    return 0;
+}
