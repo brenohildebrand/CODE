@@ -1,0 +1,51 @@
+//CS Academy - Divisor Clique
+/*
+  A top-down dp solution.
+*/
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 3000;
+int n, ans = 1;
+int vetor[MAXN];
+int DP[MAXN][MAXN]; //It stores the previous index and the current one.
+
+int dp(int x, int y){
+
+    if(DP[x][y] > -1) return DP[x][y];
+    if(x>n || y >n) return DP[x][y] = 0;
+
+    int res = 0;
+    if(vetor[y]%vetor[x] == 0) res++;
+    else return DP[x][y] = 0;
+
+    int opa = 0;
+
+    for(int i=y+1; i<=n; i++) opa = max(opa, dp(y, i));
+
+    return DP[x][y] = opa+res;
+}
+
+int main(){
+
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    memset(DP, -1, sizeof(DP));
+
+    cin >> n;
+
+    for(int i=1; i<=n; i++) cin >> vetor[i];
+
+    sort(vetor+1, vetor+1+n);
+
+    //dp
+    for(int i=1; i<=n; i++){
+        for(int j=i+1; j<=n; j++){
+            ans = max(ans, dp(i,j));
+        }
+    }
+
+    cout << ans+1 << "\n";
+
+    return 0;
+}
