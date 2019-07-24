@@ -1,0 +1,129 @@
+//COCI 09 - DOBRA
+/*
+  This is a combinatorial problem.
+  Basically, I analyze the neighboors of an underline and then I can know if it can be only vowels, only consonantes or vowels
+  ans consonants (if this is true I separate int two cases). I made two functions (calculatudo, calculatudoseml) because in the first I
+  calcule all possibilities (with and without 'l') and in the second I calcule only the possibilities without l. This is important
+  because if the inicial string doesn't have the 'l' I need to calculate all the possibilities and after subract this value from
+  the number of possibilities without 'l'.
+*/
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long int ll;
+
+const int MAXN = 110;
+ll ans1, ans2;
+string s;
+bool ok = false;
+int vetor[MAXN];
+vector<int> sites;
+
+void calculatudo(int id, ll valor){
+
+    //Caso Base
+    if(id>(int)sites.size()-1){
+            ans1 += valor;
+            return;
+    }
+
+    ll ans = valor;
+
+    //Verifica o que pode ser
+    bool vogal = true, consoante = true;
+    int i = sites[id];
+
+    if(i>0 && i<(int)s.size()-1){
+    if(vetor[i-1] ==1 && vetor[i+1]==1) vogal = false;
+    if(vetor[i-1] ==0 && vetor[i+1]==0) consoante = false;
+    }
+
+    if(i>1){
+    if(vetor[i-1] ==1 && vetor[i-2]==1) vogal = false;
+    if(vetor[i-1] ==0 && vetor[i-2]==0) consoante = false;
+    }
+
+    if(i<(int)s.size()-2){
+    if(vetor[i+1] ==1 && vetor[i+2]==1) vogal = false;
+    if(vetor[i+1] ==0 && vetor[i+2]==0) consoante = false;
+    }
+
+    if(vogal){
+        vetor[i] = 1;
+        calculatudo(id+1, ans*5);
+        vetor[i] = -1;
+    }
+    if(consoante){
+        vetor[i] = 0;
+        calculatudo(id+1, ans*21);
+        vetor[i] = -1;
+    }
+
+    return;
+
+}
+
+void calculatudoseml(int id, ll valor){
+
+    //Caso Base
+    if(id>(int)sites.size()-1){
+            ans2 += valor;
+            return;
+    }
+
+    ll ans = valor;
+
+    //Verifica o que pode ser
+    bool vogal = true, consoante = true;
+    int i = sites[id];
+
+    if(i>0 && i<(int)s.size()-1){
+    if(vetor[i-1] ==1 && vetor[i+1]==1) vogal = false;
+    if(vetor[i-1] ==0 && vetor[i+1]==0) consoante = false;
+    }
+
+    if(i>1){
+    if(vetor[i-1] ==1 && vetor[i-2]==1) vogal = false;
+    if(vetor[i-1] ==0 && vetor[i-2]==0) consoante = false;
+    }
+
+    if(i<(int)s.size()-2){
+    if(vetor[i+1] ==1 && vetor[i+2]==1) vogal = false;
+    if(vetor[i+1] ==0 && vetor[i+2]==0) consoante = false;
+    }
+
+   if(vogal){
+        vetor[i] = 1;
+        calculatudoseml(id+1, ans*5);
+        vetor[i] = -1;
+    }
+    if(consoante){
+        vetor[i] = 0;
+        calculatudoseml(id+1, ans*20);
+        vetor[i] = -1;
+    }
+    return;
+
+}
+
+int main(){
+
+    cin >> s;
+
+    for(int i=0; i<s.size(); i++){
+            if(s[i] == 'L') ok = true;
+            if(s[i] == 'A' || s[i] == 'E' || s[i] == 'I' || s[i] == 'O' || s[i] == 'U') vetor[i] = 1;
+            if(s[i] == '_') {
+                    vetor[i] = -1;
+                    sites.push_back(i);
+            }
+    }
+
+    calculatudo(0, 1);
+    calculatudoseml(0, 1);
+    //cout << ans1 << " " << ans2 << endl;
+    if(!ok) cout << ans1 - ans2 << "\n";
+    else cout << ans1 << "\n";
+
+    return 0;
+}
