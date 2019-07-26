@@ -1,0 +1,26 @@
+//COCI 06 - Sjecista
+/*
+
+  Fixing a point, we take each diagonal with the other point using the clock wise direction, we split the points in two parts, which we
+  use to build other diagonals crossing the main diagonal.
+
+*/
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 110;
+int n, ans;
+
+int main(){
+
+    cin >> n;
+
+    for(int i=1; i<=n-3;  i++)
+        ans +=  i*(n-2-i);
+
+    ans = ans*n/4;
+
+    cout << ans << "\n";
+
+    return 0;
+}
