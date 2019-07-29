@@ -1,0 +1,126 @@
+//CS Academy - Recursive String
+/*
+
+ I built a bottom up solution, but I got TLE. Then I just split the problem into two parts. I solved using the same idea,
+ since after the string n = 20, I put the strings n = 21,22,23... in function of the strings n = 18, 19 and 20.
+
+*/
+#include <bits/stdc++.h>
+using namespace std;
+
+int n,k;
+char ans = 'z';
+string atual;
+string a,b,c;
+string dez8, dez9, vinte; //Eighteen, nineteen, twenty
+
+int main(){
+
+    cin >> n >> k;
+
+    a = "a";
+    b = "b";
+    c = "c";
+
+    if(n <= 20){
+
+        for(int i=0; i<=n; i++){
+
+            if(i==0){
+                atual = a;
+            }else if(i==1){
+                atual = b;
+            }else if(i==2){
+                atual = c;
+            }else{
+
+                atual = c+b+a;
+
+                a = b;
+                b = c;
+                c = atual;
+
+            }
+        }
+
+        if(k-1 >= 0 && k-1 < (int)atual.size()) ans = atual[k-1];
+
+    }else{
+
+        for(int i=0; i<=20; i++){
+
+            if(i==0){
+                atual = a;
+            }else if(i==1){
+                atual = b;
+            }else if(i==2){
+                atual = c;
+            }else{
+
+                atual = c+b+a;
+
+                a = b;
+                b = c;
+                c = atual;
+
+            }
+        }
+
+        //a, b and c stores the value of eighteen, nineteen and twenty respectively.
+        dez8 = "1";
+        dez9 = "2";
+        vinte = "3";
+
+        for(int i=21; i<=n; i++){
+
+            atual = vinte + dez9 + dez8;
+
+            dez8 = dez9;
+            dez9 = vinte;
+            vinte = atual;
+
+        }
+
+        int tam = 0; // tam means size.
+        for(int i=0; i<(int)atual.size(); i++){
+
+            if(atual[i] == '1') tam += (int)a.size();
+            if(atual[i] == '2') tam += (int)b.size();
+            if(atual[i] == '3') tam += (int)c.size();
+
+            if(tam >= k){
+
+                if(atual[i] == '1'){
+
+                    tam -= (int)a.size();
+                    k -= tam;
+
+                    ans = a[k-1];
+                    break;
+                }
+                if(atual[i] == '2'){
+
+                    tam -= (int)b.size();
+                    k -= tam;
+
+                    ans = b[k-1];
+                    break;
+                }
+                if(atual[i] == '3'){
+
+                    tam -= (int)c.size();
+                    k -= tam;
+
+                    ans = c[k-1];
+                    break;
+                }
+
+            }
+        }
+    }
+
+    if(ans == 'z') cout << -1 << "\n";
+    else cout << ans << endl;
+
+    return 0;
+}
