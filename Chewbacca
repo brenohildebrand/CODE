@@ -1,0 +1,37 @@
+//COCI '15 Contest 4 - Chewbacca
+//Based on the official solution.
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+ll n;
+int k,q;
+
+ll dist(ll x, ll y){
+
+    ll ans = 0;
+    while(x!=y){
+        if(x < y) swap(x,y);
+
+        x = (x + k - 2) / k;
+
+        ans++;
+    }
+
+    return ans;
+}
+
+int main(){
+
+    cin >> n >> k >> q;
+
+    for(int i=1; i<=q; i++){
+        ll a,b;
+
+        cin >> a >> b;
+
+        cout << dist(a,b) << "\n";
+    }
+
+    return 0;
+}
