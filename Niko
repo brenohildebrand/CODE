@@ -1,0 +1,107 @@
+//COCI 14 - NIKO
+/*
+  I used a brute force solution.
+  Comments along the code.
+*/
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 20;
+int n,m, qtd;
+int popO, popV, popN;
+string s;
+char c;
+vector<string> mec, sla;
+
+struct formations{
+
+    int O,V,N;
+
+};
+
+formations formation[MAXN];
+
+bool compara(string a, string b){
+
+    if(a.size() > b.size()) return false;
+    return true;
+
+}
+
+bool dp(int ind, int o, int v, int n){
+
+    //Caso Base                                       //Base case;
+    //cout << o << " " << v << " " << n << endl;
+    if(o < 0 ) o = 0;                                 //Just to not have problems in the next if's
+    if(v < 0 ) v = 0;
+    if(n < 0 ) n = 0;
+    if(o == 0 && v == 0 && n == 0) return true;       //I got a solution
+    if(o+v+n-qtd == 0) return true;                   //Remeber... o,v and n can't be negatives.
+    if(ind >= sla.size()) return false;
+
+    for(int i=0; i<=1; i++){                          //For each of the two letters
+
+        string palavra = sla[ind];
+        char letra = palavra[i];
+
+        if(letra == 'O') if(dp(ind+1, o-1, v, n)) return true; //If i got a solution, I return true to not waste time
+        if(letra == 'V') if(dp(ind+1, o, v-1, n)) return true;
+        if(letra == 'N') if(dp(ind+1, o, v, n-1)) return true;
+
+    }
+
+    return false;                                   //In case of everything get wrong
+}
+
+int main(){
+
+    cin >> n;
+    for(int i=1; i<=n; i++){                        //Just reading
+        cin >> formation[i].O;
+        cin >> c;
+        cin >> formation[i].V;
+        cin >> c;
+        cin >> formation[i].N;
+    }
+    cin >> m;
+    for(int i=1; i<=m; i++){
+        cin >> s;
+        mec.push_back(s);
+    }
+
+    sort(mec.begin(), mec.end(), compara);     //Sorting by the size of the strings -> from the smaller to the bigger
+                                               //Whoops... Only now I noticed that it was useless
+
+    for(int i=0; i<mec.size(); i++){           //Update some variables
+
+        if(mec[i].size() == 2) sla.push_back(mec[i]); //The vector that stores strings of size two
+        else if(mec[i].size() == 3) qtd++;     //The number of strings that I can use to any letter I will need.
+        else{
+            if(mec[i] == "O") popO++;          //The number of strings with only O
+            if(mec[i] == "V") popV++;          //The number of strings with only V
+            if(mec[i] == "N") popN++;          //The number of strings with only N
+        }
+    }
+
+    /*
+    cout << "popO: " << popO << endl;
+    cout << "popV: " << popV << endl;
+    cout << "popN: " << popN << endl;
+    cout << "Qtd: " << qtd << endl;
+    cout << "sla.size(): " << sla.size() << endl;
+    */
+
+    for(int i=1; i<=n; i++){ //For all the formations, I use a brute force function
+                             //Understand "dp" as bruteforce haha
+
+        formation[i].O-=popO; //Remeber that popX is the number of strings, i.e, of players that can only play at X position.
+        formation[i].V-=popV;
+        formation[i].N-=popN;
+
+        if(dp(0, formation[i].O, formation[i].V, formation[i].N)) cout << "DA\n";
+        else cout << "NE\n";
+
+    }
+
+    return 0;
+}
