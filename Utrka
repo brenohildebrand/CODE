@@ -1,0 +1,45 @@
+//COCI 14 - Utrka
+/*
+  
+  I just used map.
+  If the name appears on the first list I increase by one.
+  If the name appears on the second list I decrease by one.
+  The value of the unique name that will rest will be equal to one.
+  
+*/
+#include <map>
+#include <iostream>
+using namespace std;
+
+int n;
+map<string, int> mapa;
+
+int main(){
+
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+    cin >> n;
+
+    for(int i=1; i<=n; i++){
+        string s;
+        cin >> s;
+        mapa[s]++;
+    }
+
+    for(int i=1; i<n; i++){
+        string s;
+        cin >> s;
+        mapa[s]--;
+    }
+
+    for(map<string,int>::iterator it = mapa.begin(); it!=mapa.end(); it++){
+
+        if(it->second == 1){
+            cout << it->first << "\n";
+            break;
+        }
+
+    }
+
+    return 0;
+}
