@@ -1,0 +1,55 @@
+//CF597-D2-C
+//I used the same idea of the "official solution"
+#include <bits/stdc++.h>
+using namespace std;
+ 
+#define int uint64_t
+ 
+const int MAXN = 100100;
+int BIT[MAXN][15];
+int n,k, x;
+int ans;
+ 
+void update(int a, int ind, int b){
+ 
+    BIT[a][ind] += 1ll*b;
+    for(a+=(a&-a); a<MAXN; a+=(a&-a)) BIT[a][ind] += 1ll*b;
+ 
+}
+ 
+int query(int a, int ind){
+ 
+    int s = 0;
+    s += BIT[a][ind];
+    for(a-=(a&-a); a>=1; a-=(a&-a)) s += BIT[a][ind];
+    return s;
+ 
+}
+ 
+void processa(int d){
+ 
+    update(d, 1, 1);
+    for(int i=2; i<=k; i++){
+ 
+        int consulta = query(d-1, i-1);
+        update(d, i, consulta);
+ 
+    }
+ 
+}
+ 
+int32_t main(){
+ 
+    scanf("%d%d", &n, &k);
+    k++;
+    for(int i=1; i<=n; i++){
+        scanf("%d", &x);
+        processa(x);
+    }
+ 
+    ans += query(n, k);
+ 
+    printf("%lld", ans);
+ 
+    return 0;
+}
