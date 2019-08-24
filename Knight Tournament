@@ -1,0 +1,56 @@
+//CF357-D2-C
+//According to the second solution of the editorial
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 300100;
+int n,m;
+int Next[MAXN];
+int ans[MAXN];
+
+int GONext(int k){
+	if(k==0) return 0;
+	if(Next[k] == k) return k;
+	else return Next[k] = GONext(Next[k]);
+}
+
+int main(){
+
+	scanf("%d%d", &n, &m);
+
+	for(int i=1; i<=n; i++) Next[i] = i;
+
+	for(int i=1; i<=m; i++){
+
+		int l,r,w;
+		scanf("%d%d%d", &l, &r, &w);
+
+		int cur = GONext(l);
+
+		while(cur <= r){
+
+			if(cur == w) cur++;
+			else{
+				ans[cur] = w;
+				Next[cur]++;
+			}
+
+			cur = GONext(cur);
+
+			if(!cur) break;
+
+		}
+
+		if(i == m) ans[w] = 0;
+
+	}	
+
+	for(int i=1; i<=n; i++){
+		if(i==1) printf("%d", ans[i]);
+		else printf(" %d", ans[i]);
+	} 
+
+	printf("\n");
+
+	return 0;
+}
