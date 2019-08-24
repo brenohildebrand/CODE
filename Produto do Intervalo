@@ -1,0 +1,90 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 100010;
+int tree[2*MAXN];
+int n, K;
+int a,b;
+char c;
+
+void update(int pos, int v){
+
+	pos += n-1;
+
+	tree[pos] = v;
+
+	for(pos/=2; pos >= 1; pos/=2){
+		tree[pos] = tree[pos*2] * tree[pos*2+1];
+	}
+
+}
+
+int query(int a, int b){
+
+	a += n-1; b += n-1;
+
+	if(a>b) swap(a,b);
+
+	int ans = 1;
+
+	while(a<=b){
+
+		if(a%2 == 1) ans *= tree[a++];
+		if(b%2 == 0) ans *= tree[b--];
+
+		a/=2; b/=2;
+		//a = a/2; b = b/2;
+
+	}
+
+	return ans;
+
+}
+
+int main(){
+
+	while(cin >> n >> K){
+		
+	for(int i=0; i<MAXN; i++) tree[i] = 1;
+	
+	for(int i=1; i<=n; i++){
+
+		int k;
+		cin >> k;
+		if(k>0) k = 1;
+		if(k<0) k = -1;
+		update(i,k); //pos e valor
+
+	}
+
+	//for(int i=1; i<=2*n+1; i++) cout << tree[i] << " ";
+	//cout << "\n";
+
+	for(int i=1; i<=K; i++){ //Para cada operação
+
+		cin >> c >> a >> b;
+
+		if(c == 'C'){
+			if(b>0) b = 1;
+			if(b<0) b = -1;
+			update(a,b);
+		}
+
+		if(c == 'P'){
+
+			int res = query(a,b);
+
+			if(res > 0) cout << "+";
+			else if(res < 0) cout << "-";
+			else cout << 0;
+
+		}
+
+	}
+
+	cout << "\n";
+
+	}
+
+	return 0;
+}
