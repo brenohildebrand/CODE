@@ -1,0 +1,82 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 1000100;
+int n,N;
+int vetor[2*MAXN];
+int prefix[2*MAXN];
+int tree[4*MAXN];
+
+void update(int a, int b){
+	a += N-1;
+	tree[a] = b;
+	for(a/=2; a >= 1; a/=2) tree[a] = min(tree[a*2], tree[a*2+1]);
+}
+
+int query(int a, int b){
+
+	a += N-1; b += N-1;
+
+	int res = 1999999999;
+
+	if(a > b) swap(a,b);
+
+	while(a <= b){
+
+		if(a%2 == 1) res = min(res, tree[a++]);
+		if(b%2 == 0) res = min(res, tree[b--]);
+
+		a/=2; b/=2;
+
+	}
+
+	return res;
+
+}
+
+int main(){
+
+	//For each test case
+	while(scanf("%d", &n) && n){
+
+		N = 2*n;
+		//Reading
+		for(int i=1; i<=n; i++) scanf("%d", &vetor[i]);
+
+		//Duplicating
+		for(int i=1; i<=n; i++) vetor[n+i] = vetor[i]; 
+
+		//Creating the prefix
+		memset(prefix, 0, sizeof(prefix));
+		for(int i=1; i<=2*n; i++) prefix[i] = vetor[i] + prefix[i-1];
+
+		/*
+		cout << "Prefix: ";
+		for(int i=1; i<=2*n; i++) cout << prefix[i] << " ";
+		cout << "\n";
+		*/
+
+		//Building Segment Tree
+		for(int i=1; i<=2*n; i++) update(i, prefix[i]);
+
+		/*
+		cout << "SegTree: ";
+		for(int i=1; i<=4*n; i++) cout << tree[i] << " ";
+		cout << "\n";
+		*/
+
+		//Assuming that all cases are possible
+		int res = n;
+
+		//Verifying if really all cases are possible
+		for(int i=1; i<=n; i++){
+			//If it's impossible
+			if(prefix[i-1] > query(i, i+n-1)) res--;
+			//cout << "Para o " << i << "º: " << query(i,i+n-1) << "\n";
+		}
+		printf("%d\n", res);
+
+	}
+
+	return 0;
+}
