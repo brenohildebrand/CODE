@@ -1,0 +1,79 @@
+//Solution by Sophia Souza
+/*
+  
+  We can do a binary search for each size of sequence and we can prove that this size will be at most 3*10^5 approximatelly this way:
+  
+  Note: some approximations are being used.
+  
+  (K+1)*K <= 10e10 * 2
+K^2 + k - 2* 10e10 <= 0
+
+k = (-1 +- sqrt(1 + 4*1*2*10e10)) / 2
+
+- 3 * 10e5  < K < 3 * 10e5
+  
+ Thus, in the binary search you can consider the middle as the last number of the sequence and calculate the sum up to there using
+ Gauss Sum.
+  
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long int ll;
+
+ll n;
+ll sum;
+ll v1, v2;
+
+ll gauss(ll k){
+
+	if(k%2==0) return (k+1) * (k/2);
+ 	else return k * ((k+1)/2);
+}
+
+void buscabin(int x){
+
+	ll ini = 1, meio, fim = 10e10;
+
+	v1 = -1, v2 = -1;
+
+	while(ini<=fim){
+
+		meio = (ini+fim)/2;
+		//cout << "ini: " << ini << "    fim: " << fim << "    meio: " << meio << "\n";
+		
+		if(meio-x < 0){
+			ini = meio+1;
+			continue;
+		}
+
+		ll sum = gauss(meio) - gauss(meio-x);
+
+		if(sum == n){
+			v1 = meio-x+1;
+			v2 = meio;
+			break;
+		}
+
+		if(sum > n) fim = meio-1;
+		if(sum < n)	ini = meio+1;
+
+	}
+
+}
+
+int main(){
+
+	cin >> n;
+
+	for(int i=2; i<=500000; i++){
+
+		buscabin(i);
+		if(v1 != -1 && v1!=0) cout << v1 << " " << v2 << "\n";
+
+	}
+
+	return 0;
+
+}
