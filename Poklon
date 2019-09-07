@@ -1,0 +1,116 @@
+
+//Editorial here: http://hsin.hr/coci/archive/2016_2017/contest7_solutions.zip
+
+#include <bits/stdc++.h>
+using namespace std;
+#define x first
+#define y second
+ 
+const int MAXN = 1000010;
+int n, aans, bans;
+int nivel[MAXN];
+queue<pair<int,int> > fila;
+ 
+struct nodes{
+ 
+	int l,r;
+ 
+};
+ 
+nodes node[MAXN];
+ 
+void dfs(int f, int p){
+ 
+	nivel[f] = nivel[p] + 1;
+ 
+	if(node[f].r < 0) fila.push(make_pair(abs(node[f].r) , nivel[f]+1));		
+	else dfs(node[f].r, f);
+ 
+	if(node[f].l < 0) fila.push(make_pair(abs(node[f].l) , nivel[f]+1));
+	else dfs(node[f].l, f);
+ 
+}
+ 
+ 
+int main(){
+ 
+	ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+ 
+	cin >> n;
+ 
+	for(int i=1; i<=n; i++) cin >> node[i].l >> node[i].r;
+ 
+	nivel[0] = -1;
+	dfs(1,0);
+ 
+	while(!fila.empty()){
+ 
+		pair<int,int> atual = fila.front();
+		fila.pop();
+ 
+		//Vamos compara ans e atual.x
+		//Primeiro verificamos o último bit
+    
+		int tam = 32-__builtin_clz(atual.x) + atual.y;
+		int tamans = 32-__builtin_clz(aans) + bans;
+ 
+		if(tamans != tam){
+ 
+			if(tamans < tam){
+ 
+				// cout << "Atualizei tamdiff\n";
+				aans = atual.x;
+				bans = atual.y;
+ 
+			}
+ 
+		}else{
+ 
+			tam = 31-__builtin_clz(atual.x);
+			tamans = 31-__builtin_clz(aans);
+ 
+			int size = min(tam, tamans);
+ 
+			for(int i=size; i>=0; i--){
+ 
+				bool ok = (atual.x&(1<<tam));
+				bool okans = (aans&(1<<tamans));
+ 
+				if(ok && !okans){
+					aans = atual.x;
+					bans = atual.y;
+					break;
+				}
+				if(!ok && okans) break;
+ 
+				tam--;
+				tamans--;
+ 
+			}
+ 
+		}
+ 
+	}
+ 
+	bool verifica = false;
+	for(int i=30; i>=0; i--){
+ 
+		if((aans&(1<<i))) verifica = true;
+ 
+		if(!verifica) continue;
+ 
+		bool bit = (aans&(1<<i));
+ 
+		cout << bit;
+ 
+	}
+ 
+	for(int i=1; i<=bans; i++){
+ 
+		cout << 0;
+ 
+	}
+ 
+	cout << "\n";
+ 
+}
