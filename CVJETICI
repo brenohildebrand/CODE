@@ -1,0 +1,81 @@
+//SPOJ CVJETICI
+/*
+  
+   Solution:
+   I did a BIT and in every query I calculated the answer using an array d[x]
+   that stores the number of interseptions at the x coordinate.
+   On each query I compared the value of BIT[x] with the d[x] to discover if I have some new intersection.
+   If I had, I update the value of d[x] to BIT[x].
+   
+   Note that I separate the case a==b, because in this occasion I don't need to update some range cause of this
+   doesn't exist.
+   
+*/ 
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 100100;
+int n;
+int BIT[MAXN];
+int d[MAXN];
+
+void update(int a, int b){
+
+	for(; a<=MAXN; a+=(a&-a)) BIT[a] += 1;
+	for(; b<=MAXN; b+=(b&-b)) BIT[b] += -1;
+
+}
+
+int query(int a, int b){
+
+	int aoriginal = a, boriginal = b;
+	int sa=0, sb=0;
+	for(; a>0; a-=(a&-a)) sa += BIT[a];
+	for(; b>0; b-=(b&-b)) sb += BIT[b];
+
+	//cout << "sa: " << sa << "    sb: " << sb << endl;
+
+	int ans = 0;
+	a = aoriginal;
+	b = boriginal;
+  
+	if(sa > d[a]){
+		ans += sa-d[a];
+		d[a] = sa;
+	}
+	if(sb > d[b]){
+		ans += sb-d[b];
+		d[b] = sb;
+	}
+
+	return ans;
+}
+
+int main(){
+
+	ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+	cin >> n;
+
+	for(int i=1; i<=n; i++){
+
+		int a,b;
+		cin >> a >> b;
+
+
+		if(a==b){
+
+			//It does not need to update
+			cout << query(a,b) << "\n";
+
+		}else{
+			update(a+1, b);
+			cout << query(a,b) << "\n";
+		}
+
+	}
+
+	return 0;
+
+}
