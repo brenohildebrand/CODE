@@ -1,0 +1,72 @@
+//CCC 07 S5 - Bowling for Numbers
+/*
+  Notice: tam means size in this context.
+
+  1.Let's use a DP with the following statements:
+  DP[index of the current numbet at the main array][number of sets that still can be used];
+  
+  2.The base cases are:
+   -if the index is bigger than n, we return 0
+   -if the number os sets is equal to zero, we return 0
+   -if we have already calculated this state, we return DP[i][tam];
+  
+  3.In each state we have two options:
+   -Put the set of size 'w' that begins at the index i and then go to the position i+w and subtract 1 from tam, once that we have
+    used more one ball to put this set on our answer. (In this case we increase the answer by the sum of all numbers in the range
+    [i, i+w-1] of the main array)
+   -Do not put the set of size 'w' that begins at the index i and then go to the position i+1, and keep the 'tam' the same.
+  
+  Notice: We always go forward in the main array; We use a prefix array to calculate the sum of the ranges.
+  
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 30100;
+const int MAXK = 505;
+int t,n,k,w;
+int vet[MAXN];
+int prefix[MAXN];
+int DP[MAXN][MAXK];	
+
+int dp(int i, int tam){
+
+	if(i > n) return DP[i][tam] = 0;
+	if(tam <= 0) return DP[i][tam] = 0;
+	if(DP[i][tam] >= 0) return DP[i][tam];
+
+	//1ª possibilidade
+	int possibilidade1 = dp(i+1, tam);
+
+	//2ª possibilidade
+	int possibilidade2 = 0;
+	if(i+w-1 <= n) possibilidade2 = dp(i+w, tam-1) + prefix[i+w-1] - prefix[i-1];
+
+	return DP[i][tam] = max(possibilidade1, possibilidade2);
+
+}
+
+int main(){
+
+	cin >> t;
+
+	for(int i=1; i<=t; i++){
+
+		memset(DP, -1, sizeof(DP));
+		memset(vet, 0, sizeof(vet));
+		memset(prefix, 0, sizeof(prefix));
+
+		cin >> n >> k >> w;
+
+		for(int i=1; i<=n; i++){
+			cin >> vet[i];
+			prefix[i] = prefix[i-1] + vet[i];
+		}
+
+		cout << dp(1, k);
+
+	}
+
+	return 0;
+}
