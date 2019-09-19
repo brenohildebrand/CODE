@@ -1,0 +1,63 @@
+//URI 2895
+/*
+  Notice: I have applied +5000 to the n before calling the dp function in order to avoid negative values.
+  
+  1.The states of the DP are:
+  DP [number of the power (of two)] [difference between the two sides of the balance]
+  
+  2.In each state of the dp we have three cases:
+   -Putting that power of two on the right side of the balance
+   -Putting that power of two on the left side of the balance
+   -Do not put that power of two in any of the two sides of the balance
+   
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int INF = 0x3f3f3f3f;
+const int MAXN = 9100;
+int n,t;
+int DP[15][MAXN];
+
+int dp(int qtd, int dif){	
+
+	if(dif == 5000) return 0;
+	if(qtd == -1) return INF;
+	if(DP[qtd][dif] >= 0) return DP[qtd][dif];
+
+	int p3 = dp(qtd-1, dif);
+
+	int p2 = INF;
+
+	if(dif - (1<<qtd) >= 0)
+		p2 = dp(qtd-1, dif - (1<<qtd)) + 1;
+
+
+	int p1 = INF;
+	if(dif + (1<<qtd) < MAXN) p1 = dp(qtd-1, dif + (1<<qtd)) + 1;
+
+	return DP[qtd][dif] = min(p1, min(p2,p3));
+
+}
+
+int main(){
+
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	cout.tie(nullptr);
+
+	memset(DP, -1, sizeof(DP));
+
+	cin >> t;
+
+	for(int i=1; i<=t; i++){
+
+		cin >> n;
+		cout << dp(12, n+5000) << "\n";
+
+	}
+
+	return 0;
+
+}
