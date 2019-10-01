@@ -1,0 +1,136 @@
+//Maja COCI '18
+//Idea: https://github.com/sofhiasouza/CompetitiveProgramming/blob/master/COCI/2018-2019/Contest%20%232/maja.cpp
+//Commented in portuguese
+ 
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long long int ll;
+
+const int MAXN = 110;
+ll n,m,a,b,k;
+ll matriz[MAXN][MAXN];
+
+struct maybe{
+
+	ll f;
+	ll sf;
+
+	bool operator > (const maybe &t){
+
+		if(f!=t.f) return f > t.f;
+		else return sf >= t.sf;
+
+		//XD
+
+	}
+
+}dp[MAXN][MAXN][2];
+
+void solve(){
+
+	//Vamos fazer uma dp iterativa
+
+	int mod = 0;
+
+	for(int p=1; p<=min(k,(ll)10000); p++){ //Atual número de passoa
+
+		mod^=1;	
+
+		for(int i=1; i<=n; i++){
+
+			for(int j=1; j<=m; j++){
+
+				//Para cada elemento da célula, em cada passo, vamos verificar o que vale mais a pena
+				//O que eu sei para construir a resposta atual é o passo anterior, ou seja, p-1 ... E pelo
+				//fato da DP depender apenas disso eu posso usar memory trick :P
+
+				//O que vale mais a pena pegar?
+				//A melhor resposta do dos meus vizinhos em p-1, e a melhor resposa é exatamente a comparação feita com
+				//o operator modificado para a struct maybe
+
+				maybe up = dp[i-1][j][mod^1];
+				maybe down = dp[i+1][j][mod^1];
+				maybe left = dp[i][j-1][mod^1];
+				maybe right = dp[i][j+1][mod^1];
+
+				//Caso o meu vizinho de cima seja a minha resposta
+				if(up > down && up > left && up > right){
+					
+					//Atualizo o valor f
+					dp[i][j][mod] = up;
+
+					//Se valer a pena atualizo o valor sf
+					dp[i][j][mod].sf = max(up.sf, matriz[i][j] + matriz[i-1][j]);
+
+				}
+
+				//Caso o meu vizinho de baixo seja a minha resposta
+				if(down > up && down > left && down > right){
+					
+					//Atualizo o valor f
+					dp[i][j][mod] = down;
+
+					//Se valer a pena atualizo o valor sf
+					dp[i][j][mod].sf = max(down.sf, matriz[i][j] + matriz[i+1][j]);
+
+				}
+
+				//Caso o meu vizinho da esquerda seja a minha resposta
+				if(left > down && left > up && left > right){
+					
+					//Atualizo o valor f
+					dp[i][j][mod] = left;
+
+					//Se valer a pena atualizo o valor sf
+					dp[i][j][mod].sf = max(left.sf, matriz[i][j] + matriz[i][j-1]);
+
+				}
+
+				//Caso o meu vizinho da direita seja a minha resposta
+				if(right > down && right > left && right > up){
+					
+					//Atualizo o valor f
+					dp[i][j][mod] = right;
+
+					//Se valer a pena atualizo o valor sf
+					dp[i][j][mod].sf = max(right.sf, matriz[i][j] + matriz[i][j+1]);
+
+				}
+
+				if(dp[i][j][mod].f != -1)  dp[i][j][mod].f += matriz[i][j];
+
+			}
+
+
+		}
+
+	}
+
+}
+
+int main(){
+
+	ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+
+	for(int i=0; i<MAXN; i++)
+		for(int j=0; j<MAXN; j++)
+			for(int k=0; k<2; k++)
+				dp[i][j][k].f = dp[i][j][k].sf = -1;
+
+	cin >> n >> m >> a >> b >> k;
+
+	for(int i=1; i<=n; i++)
+		for(int j=1; j<=m; j++)
+			cin >> matriz[i][j];
+
+	dp[a][b][0].f = 0;
+
+	solve();
+
+	if(k <= 10000) cout << dp[a][b][0].f << "\n";
+	else cout << dp[a][b][0].f + (dp[a][b][0].sf * (k - 10000))/2 << "\n";
+
+	return 0;
+
+}
