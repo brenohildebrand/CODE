@@ -1,0 +1,159 @@
+//CEOI 02 - Fence
+
+//Idea: https://github.com/nikolapesic2802/Programming-Practice/blob/master/Fence/main.cpp
+
+#include <bits/stdc++.h>
+using namespace std;
+#define pb push_back
+
+typedef long long int ll;
+typedef vector<int> vi;
+
+const int MAXN = 20;
+ll dp[MAXN][MAXN][3];
+vi sol;
+
+ll calc(int down, int up, int dir){ //Just down, up and direction
+
+	if(down + up == 0) return 1;
+
+	if(dp[down][up][dir] != -1) return dp[down][up][dir];
+
+	dp[down][up][dir] = 0; //Inicialize the dp to start calculing
+
+	if(dir == 0 || dir == 2)
+		for(int i=0; i<down; i++)
+			dp[down][up][dir] += calc(i, up+down-1-i, 1);
+
+	if(dir == 1 || dir == 2)
+		for(int i=0; i<up; i++)
+			dp[down][up][dir] += calc(up+down-1-i, i, 0);
+
+	return dp[down][up][dir];
+
+}
+
+void solve(vi down, vi up, int dir, ll c){
+
+	int d = down.size(), u = up.size();
+
+	if(d + u == 0) return; //There is nothing to do
+						   //You can't call someone from down
+						   //Neither from up
+
+	if(dir == 3){
+
+		for(int i=0; i<u; i++){
+
+			vi dd, uu;
+
+			for(int j=0; j<i; j++) dd.pb(up[j]);
+			for(int j=i+1; j<u; j++) uu.pb(up[j]);
+
+			c -= calc(dd.size(), uu.size(), 2);
+
+			if(c < 0){
+
+				sol.pb(up[i]);
+				solve(dd, uu, 2, c+calc(dd.size(), uu.size(), 2));
+				return;
+
+			}
+
+		}
+
+	}
+
+	if(dir == 0 || dir == 2){
+
+		for(int i=0; i<d; i++){
+
+			vi dd, uu;
+
+			for(int j=0; j<d; j++){
+
+				if(j < i) dd.pb(down[j]);
+				if(j > i) uu.pb(down[j]);
+
+			}
+
+			for(int j=0; j<u; j++) uu.pb(up[j]);
+
+			c -= calc(dd.size(), uu.size(), 1);
+
+			if(c < 0){
+
+				sol.pb(down[i]);
+				solve(dd, uu, 1, c+calc(dd.size(), uu.size(), 1));
+				return;
+
+			}
+
+		}
+
+	}
+
+	if(dir == 1 || dir == 2){
+
+		for(int i=0; i<u; i++){
+
+			vi dd, uu;
+
+			for(int j=0; j<d; j++) dd.pb(down[j]);
+
+			for(int j=0; j<u; j++){
+
+				if(j<i) dd.pb(up[j]);
+				if(j>i) uu.pb(up[j]);
+
+			}
+				
+			c -= calc(dd.size(), uu.size(), 0);
+				
+			if(c < 0){
+
+				sol.pb(up[i]);
+				solve(dd, uu, 0, c+calc(dd.size(), uu.size(), 0));
+				return;
+
+			}
+
+		}
+
+	}
+
+}
+
+int main(){
+ 
+	memset(dp, -1, sizeof(dp));
+
+	int k;
+
+	scanf("%i", &k);
+
+	while(k--){
+
+		sol.clear();
+		
+		int n;
+		ll c;
+
+		scanf("%i%lld", &n, &c);
+
+		vi u,d;
+
+		for(int i=1; i<=n; i++) u.pb(i);
+
+		solve(d,u, 3, c-1); //C-1 because after I won't have to compare
+							//if c <= 0 but just if c < 0
+
+		for(int i=0; i<sol.size(); i++) printf("%i ", sol[i]);
+
+		printf("\n");
+
+	}
+
+	return 0;
+
+}
