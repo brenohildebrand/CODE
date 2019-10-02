@@ -1,0 +1,79 @@
+//CEOI 13 - Treasure
+
+//Idea: http://ceoi2013.hsin.hr/tasks/tasks_and_solutions.pdf
+//Note the specific case when N is an odd number
+
+#include <bits/stdc++.h>
+#include "treasure.h"
+using namespace std;
+ 
+int n;
+ 
+int quarter(int r, int c){
+	
+	//Primeiro quadrante -> célula (1,n)
+	int primeiro = r * (abs(n - c) +1);
+	
+	//Segundo quadrante -> célula (1,1);
+	int segundo = r * c;
+	
+	//Terceiro quadrante -> célula(n,1);
+	int terceiro = (abs(n - r) + 1) * c;
+	
+	//Quarto quadrante -> célula (n,n)
+	int quarto = (abs(n-r) + 1) * (abs(n-c) + 1);
+	 
+  //The specific case
+	if(primeiro == segundo && segundo == terceiro && terceiro == quarto) return 2;
+
+	int ans = max(primeiro, max(segundo, max(terceiro, quarto)));
+
+	if(ans == primeiro) return 1;
+	if(ans == segundo) return 2;
+	if(ans == terceiro) return 3;
+	if(ans == quarto) return 4;
+	
+}
+ 
+void findTreasure(int N){
+		
+	n = N;
+	int pre[n+1][n+1];
+	memset(pre, 0, sizeof(pre));
+	
+	for(int i=n; i>=1; i--){
+		for(int j=n; j>=1; j--){
+			
+			if(quarter(i,j) == 1){
+ 
+				pre[i][j] = pre[i][n] - countTreasure(1,j+1,i,n);
+ 
+			}else if(quarter(i,j) == 2){
+ 
+				pre[i][j] = countTreasure(1,1, i,j);
+ 
+			}else if(quarter(i,j) == 3){
+ 
+				pre[i][j] = pre[n][j] - countTreasure(i+1, 1, n, j);
+ 
+			}else{
+ 
+				pre[i][j] = -pre[n][n] + pre[i][n] + pre[n][j] + countTreasure(i+1, j+1, n, n);
+ 
+			}
+			
+		}
+	}
+	
+	for(int i=1; i<=n; i++){
+		for(int j=1; j<=n; j++){
+			
+			if(pre[i][j] - pre[i-1][j] - pre[i][j-1] + pre[i-1][j-1] == 1)
+				Report(i, j);
+			
+		}
+	}
+	
+	return;
+	
+}
