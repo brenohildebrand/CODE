@@ -1,0 +1,94 @@
+/*
+  
+   Idea:
+    - The idea is to fix some index and count how many pairs of each type we could do using indexes from the right.
+    - To do it we build to arrays (vet[] and k[]). Vet[] is the original array that we simplify using 1 and -1; and k[]
+      is a bool array that we use to know if the result of the multiplication from the first index to some index i is
+      greater than 0 (false) or not (true).
+    
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+ 
+typedef long long int ll;
+ 
+const int MAXN = 200100;
+int n, numberx, numbery;
+ll ansx, ansy;
+int vet[MAXN];
+bool k[MAXN];
+ 
+int main(){
+ 
+	scanf("%d", &n);
+ 
+	for(int i=1; i<=n; i++) scanf("%d", &vet[i]);
+ 
+	for(int i=1; i<=n; i++){
+		
+		if(vet[i] > 0) vet[i] = 1;
+		if(vet[i] < 0) vet[i] = -1;
+ 
+	}
+ 
+	if(vet[1] > 0) k[1] = false; //It's okay
+	else k[1] = true; //It has changed its parity
+ 
+	for(int i=2; i<=n; i++) 
+		if(vet[i] == -1) k[i] = !k[i-1];
+		else k[i] = k[i-1];
+ 
+	for(int i=1; i<=n; i++) 
+		if(!k[i]) numberx++;
+		else numbery++;
+ 
+	//total: n
+	//number of 1: numberx
+	//number of -1: numbery
+	
+	for(int i=1; i<=n; i++){ //The starting position
+ 
+		//Verifies if the parity matches it correctly
+    //If note we have to consider something like the opposite situation.
+		bool parity;
+ 
+		if(vet[i] == 1) parity = false;
+		else parity = true;
+ 
+		//Verifying
+		bool ok;
+		if(k[i] == parity) ok = true;
+		else ok = false;
+		
+		if(ok){
+ 
+			ansx += 1LL*numberx;
+			ansy += 1LL*numbery;
+ 
+		}else{
+ 
+			ansx += 1LL*numbery;
+			ansy += 1LL*numberx;
+ 
+		}
+ 
+		if(k[i]) numbery--;
+		else numberx--;
+ 
+		/*
+		cout << endl;
+		cout << "i: " << i << endl;
+		cout << "ansx: " << ansx << endl;
+		cout << "ansy: " << ansy << endl;
+		cout << "numberx: " << numberx << endl;
+		cout << "numbery: " << numbery << endl;
+		*/
+ 
+	}
+ 
+	printf("%lld %lld\n", ansy, ansx);
+ 
+	return 0;
+ 
+}
